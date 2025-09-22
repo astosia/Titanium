@@ -48,19 +48,21 @@ module.exports = function (minified) {
     userTeal1: {
 
     },
-    bwTheme1: {
+    bwTheme1: { //White background
       BWDateColor:"000000", //GColorBlack;
       BWBackgroundColor1:"FFFFFF", //GColorWhite;
       BWBackgroundColor2:"555555", //GColorDarkGray;
       BWTextColor1:"FFFFFF",  //GColorWhite;
-      BWTextColor2: "000000" //GColorBlack;
+      BWTextColor2: "000000", //GColorBlack;
+      BWBTQTColor: "000000"
     },
-    bwTheme2: { //inverted
+    bwTheme2: { //inverted, black background
       BWDateColor:"FFFFFF",
       BWBackgroundColor1:"000000",
       BWBackgroundColor2:"555555",
       BWTextColor1:"000000",
-      BWTextColor2: "FFFFFF"
+      BWTextColor2: "FFFFFF",
+      BWBTQTColor: "000000"
     }
   };
 

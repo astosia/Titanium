@@ -45,6 +45,7 @@ typedef struct ClaySettings {
 //  bool EnableWatchModel;
 //  bool DigitalWatch;
   int Font;
+  char* BWThemeSelect;
   GColor BackgroundColor1;
   GColor BackgroundColor2;
   GColor TextColor1;
@@ -63,6 +64,6 @@ typedef struct ClaySettings {
   GColor BWTextColor2;
   GColor BTQTColor;
   GColor BWBTQTColor;
-  int BWTheme;
   bool BWShadowOn;
+  bool ShadowOn;
 } __attribute__((__packed__)) ClaySettings;

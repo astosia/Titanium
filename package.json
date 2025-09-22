@@ -1,7 +1,7 @@
 {
   "name": "Titanium",
   "author": "astosia",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "keywords": [
     "pebble",
     "watchface",
@@ -43,7 +43,8 @@
       "TextColor2",
       "TextColor3",
       "DateColor",
-      "BWDateColor",
+      "BTQTColor",
+      "ShadowOn",
       "HoursHandColor",
       "HoursHandBorderColor",
       "MinutesHandColor",
@@ -53,11 +54,11 @@
       "BWBackgroundColor2",
       "BWTextColor1",
       "BWTextColor2",
-      "BWTheme",
+      "BWDateColor",
+      "BWBTQTColor",
+      "BWThemeSelect",
       "BWShadowOn",
       "Font",
-      "BTQTColor",
-      "BWBTQTColor",
       "VibeOn"
     ],
     "resources": {

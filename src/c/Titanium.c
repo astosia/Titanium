@@ -181,18 +181,11 @@ static void prv_default_settings(void) {
   settings.BWTextColor2 = GColorBlack;
   settings.BTQTColor = GColorBlack;
   settings.BWBTQTColor = GColorBlack;
-  settings.BWTheme = 1;
+  settings.BWThemeSelect = "wh";
   settings.BWShadowOn = true;
   settings.Font = 1;
   settings.VibeOn = false;
 }
-
-
-
-
-
-
-
 
 // Quiet time icon handler
 static void quiet_time_icon () {
@@ -358,11 +351,13 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
 #endif
 
   bool settings_changed = false;
+  bool theme_settings_changed = false;
 
   Tuple *vibe_t = dict_find(iter, MESSAGE_KEY_VibeOn);
   Tuple *enable_seconds_t = dict_find(iter, MESSAGE_KEY_EnableSecondsHand);
   Tuple *enable_secondsvisible_t = dict_find(iter, MESSAGE_KEY_SecondsVisibleTime);
   Tuple *enable_date_t = dict_find(iter, MESSAGE_KEY_EnableDate);
+  Tuple *bwthemeselect_t = dict_find(iter, MESSAGE_KEY_BWThemeSelect);
   Tuple *bg_color1_t = dict_find(iter, MESSAGE_KEY_BackgroundColor1);
   Tuple *bg_color2_t = dict_find(iter, MESSAGE_KEY_BackgroundColor2);
   Tuple *text_color1_t = dict_find(iter, MESSAGE_KEY_TextColor1);
@@ -381,7 +376,6 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
   Tuple *bwtext_color2_t = dict_find(iter, MESSAGE_KEY_BWTextColor2);
   Tuple *btqt_color_t = dict_find(iter, MESSAGE_KEY_BTQTColor);
   Tuple *bwbtqt_color_t = dict_find(iter, MESSAGE_KEY_BWBTQTColor);
-  Tuple *bwtheme_t = dict_find(iter, MESSAGE_KEY_BWTheme);
   Tuple *bwshadowon_t = dict_find(iter, MESSAGE_KEY_BWShadowOn);
   Tuple *font_t = dict_find(iter, MESSAGE_KEY_Font);
 
@@ -449,14 +443,182 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
     layer_mark_dirty(s_canvas_second_hand);
   }
 
-  if (bwtheme_t) {
-    settings.BWTheme = (int) bwtheme_t->value->int32;
-    settings_changed = true;
-  }
-  if (bwshadowon_t) {
-    settings.BWShadowOn = bwshadowon_t->value->int32 == 1;
-    layer_mark_dirty(s_canvas_layer);
-  }
+  if (bwthemeselect_t) {
+          // Compare the string value received from the phone
+          if (strcmp(bwthemeselect_t->value->cstring, "wh") == 0) {
+              // Set the theme and other settings for "wh"
+                    settings.BWDateColor = GColorBlack;
+                    if (bwshadowon_t) {
+                      settings.BWShadowOn = bwshadowon_t->value->int32 == 1;
+                    }
+                        if(settings.BWShadowOn){
+                          settings.BWBackgroundColor2 = GColorDarkGray;
+                        }
+                        else {
+                        settings.BWBackgroundColor2 = GColorWhite;
+                        }
+                    settings.BWBackgroundColor1 = GColorWhite;
+                    settings.BWTextColor1 = GColorWhite;
+                    settings.BWTextColor2 = GColorBlack;
+                    settings.BWBTQTColor = GColorBlack;
+                      theme_settings_changed = true;
+                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme white selected");
+          } else if (strcmp(bwthemeselect_t->value->cstring, "bl") == 0) {
+              // Set the theme and other settings for "bl"
+                    settings.BWDateColor = GColorWhite;
+                    settings.BWBackgroundColor1 = GColorBlack;
+                    if (bwshadowon_t) {
+                      settings.BWShadowOn = bwshadowon_t->value->int32 == 1;
+                    }
+                        if(settings.BWShadowOn){
+                          settings.BWBackgroundColor2 = GColorDarkGray;
+                        }
+                        else {
+                        settings.BWBackgroundColor2 = GColorBlack;
+                        }
+                    settings.BWTextColor1 = GColorBlack;
+                    settings.BWTextColor2 = GColorWhite;
+                    settings.BWBTQTColor = GColorWhite;
+                      theme_settings_changed = true;
+                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme black selected");
+          } else if (strcmp(bwthemeselect_t->value->cstring, "cu") == 0) {
+              // Set the theme for "cu" and handle custom colors
+              settings.BWDateColor = GColorFromHEX(bwdate_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_layer);
+
+                  if (bwbg_color1_t) {
+                    settings.BWBackgroundColor1 = GColorFromHEX(bwbg_color1_t->value->int32);
+                    settings_changed = true;
+                  }
+
+                  if (bwshadowon_t) {
+                    settings.BWShadowOn = bwshadowon_t->value->int32 == 1;
+
+                      if(settings.BWShadowOn){
+                        if (bwbg_color2_t) {
+                          settings.BWBackgroundColor2 = GColorFromHEX(bwbg_color2_t->value->int32);
+                          settings_changed = true;
+                        }
+                      }
+                      else {
+                      settings.BWBackgroundColor2 = settings.BWBackgroundColor1;
+                      }
+                  }
+
+                  if (bwtext_color1_t) {
+                    settings.BWTextColor1 = GColorFromHEX(bwtext_color1_t->value->int32);
+                    settings_changed = true;
+                  }
+                  if (bwtext_color2_t) {
+                    settings.BWTextColor2 = GColorFromHEX(bwtext_color2_t->value->int32);
+                    settings_changed = true;
+                  }
+                  if (bwbtqt_color_t) {
+                    settings.BWBTQTColor = GColorFromHEX(bwbtqt_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_bt_icon);
+                    layer_mark_dirty(s_canvas_qt_icon);
+                  }
+                  theme_settings_changed = true;
+                    APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme custom selected");
+                }
+          }
+
+
+  // if (bwthemeselect_t) {
+  //
+  //   snprintf(settings.BWThemeSelect, sizeof(settings.BWThemeSelect), "%s", bwthemeselect_t -> value -> cstring);
+  //
+  //
+  //   //settings.BWThemeSelect = (int) bwthemeselect_t->value->int32;
+  //     APP_LOG(APP_LOG_LEVEL_DEBUG, "BW Theme is %s", settings.BWThemeSelect);
+  //
+  // //  if (settings.BWThemeSelect == 656670769 || settings.BWThemeSelect == 1) { // White background theme
+  //   if (settings.BWThemeSelect == "wh") {
+  //         settings.BWDateColor = GColorBlack;
+  //       if (bwshadowon_t) {
+  //         settings.BWShadowOn = bwshadowon_t->value->int32 == 1;
+  //       }
+  //           if(settings.BWShadowOn){
+  //             settings.BWBackgroundColor2 = GColorDarkGray;
+  //           }
+  //           else {
+  //           settings.BWBackgroundColor2 = GColorWhite;
+  //           }
+  //       settings.BWBackgroundColor1 = GColorWhite;
+  //       settings.BWTextColor1 = GColorWhite;
+  //       settings.BWTextColor2 = GColorBlack;
+  //       settings.BWBTQTColor = GColorBlack;
+  //         theme_settings_changed = true;
+  //           APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme white selected");
+  //   }
+  //   //else if (settings.BWThemeSelect == 656670770 || settings.BWThemeSelect == 2) { // Black background theme
+  //     else if (settings.BWThemeSelect == "bl") {
+  //       settings.BWDateColor = GColorWhite;
+  //       settings.BWBackgroundColor1 = GColorBlack;
+  //       if (bwshadowon_t) {
+  //         settings.BWShadowOn = bwshadowon_t->value->int32 == 1;
+  //       }
+  //           if(settings.BWShadowOn){
+  //             settings.BWBackgroundColor2 = GColorDarkGray;
+  //           }
+  //           else {
+  //           settings.BWBackgroundColor2 = GColorBlack;
+  //           }
+  //       settings.BWTextColor1 = GColorBlack;
+  //       settings.BWTextColor2 = GColorWhite;
+  //       settings.BWBTQTColor = GColorWhite;
+  //         theme_settings_changed = true;
+  //           APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme black selected");
+  //   }
+  //    else {
+  //     if (bwdate_color_t) {
+  //       settings.BWDateColor = GColorFromHEX(bwdate_color_t->value->int32);
+  //       layer_mark_dirty(s_canvas_layer);
+  //     }
+  //     if (bwbg_color1_t) {
+  //       settings.BWBackgroundColor1 = GColorFromHEX(bwbg_color1_t->value->int32);
+  //       settings_changed = true;
+  //     }
+  //
+  //     if (bwshadowon_t) {
+  //       settings.BWShadowOn = bwshadowon_t->value->int32 == 1;
+  //
+  //         if(settings.BWShadowOn){
+  //           if (bwbg_color2_t) {
+  //             settings.BWBackgroundColor2 = GColorFromHEX(bwbg_color2_t->value->int32);
+  //             settings_changed = true;
+  //           }
+  //         }
+  //         else {
+  //         settings.BWBackgroundColor2 = settings.BWBackgroundColor1;
+  //         }
+  //     }
+  //
+  //     if (bwtext_color1_t) {
+  //       settings.BWTextColor1 = GColorFromHEX(bwtext_color1_t->value->int32);
+  //       settings_changed = true;
+  //     }
+  //     if (bwtext_color2_t) {
+  //       settings.BWTextColor2 = GColorFromHEX(bwtext_color2_t->value->int32);
+  //       settings_changed = true;
+  //     }
+  //     if (bwbtqt_color_t) {
+  //       settings.BWBTQTColor = GColorFromHEX(bwbtqt_color_t->value->int32);
+  //       layer_mark_dirty(s_canvas_bt_icon);
+  //       layer_mark_dirty(s_canvas_qt_icon);
+  //     }
+  //     theme_settings_changed = true;
+  //       APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme custom selected");
+  //   }
+  //
+  //   }
+
+    // Apply the selected theme colors directly to settings
+
+    // The 'else' case for custom theme is already handled by the individual color tuples below
+    // No need for a separate block here.
+
+
 
   if (bg_color1_t) {
     settings.BackgroundColor1 = GColorFromHEX(bg_color1_t->value->int32);
@@ -488,10 +650,7 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
     settings.DateColor = GColorFromHEX(date_color_t->value->int32);
     layer_mark_dirty(s_canvas_layer);
   }
-  if (bwdate_color_t) {
-    settings.BWDateColor = GColorFromHEX(bwdate_color_t->value->int32);
-    layer_mark_dirty(s_canvas_layer);
-  }
+
   if (hours_color_t) {
     settings.HoursHandColor = GColorFromHEX(hours_color_t->value->int32);
     layer_mark_dirty(s_canvas_layer);
@@ -519,27 +678,8 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
     layer_mark_dirty(s_canvas_bt_icon);
     layer_mark_dirty(s_canvas_qt_icon);
   }
-  if (bwbtqt_color_t) {
-    settings.BWBTQTColor = GColorFromHEX(bwbtqt_color_t->value->int32);
-    layer_mark_dirty(s_canvas_bt_icon);
-    layer_mark_dirty(s_canvas_qt_icon);
-  }
-  if (bwbg_color1_t) {
-    settings.BWBackgroundColor1 = GColorFromHEX(bwbg_color1_t->value->int32);
-    settings_changed = true;
-  }
-  if (bwbg_color2_t) {
-    settings.BWBackgroundColor2 = GColorFromHEX(bwbg_color2_t->value->int32);
-    settings_changed = true;
-  }
-  if (bwtext_color1_t) {
-    settings.BWTextColor1 = GColorFromHEX(bwtext_color1_t->value->int32);
-    settings_changed = true;
-  }
-  if (bwtext_color2_t) {
-    settings.BWTextColor2 = GColorFromHEX(bwtext_color2_t->value->int32);
-    settings_changed = true;
-  }
+
+
   if (font_t) {
     settings.Font = font_t->value->int32;
     settings_changed = true;
@@ -550,6 +690,16 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
     layer_mark_dirty(s_canvas_layer);
     layer_mark_dirty(s_dial_layer);
     layer_mark_dirty(s_canvas_second_hand);
+  }
+
+  if (theme_settings_changed) {
+    layer_mark_dirty(s_bg_layer);
+    layer_mark_dirty(s_canvas_layer);
+    layer_mark_dirty(s_dial_layer);
+    layer_mark_dirty(s_canvas_second_hand);
+    layer_mark_dirty(s_canvas_qt_icon);
+    layer_mark_dirty(s_canvas_bt_icon);
+    layer_mark_dirty(s_canvas_battery_hand);
   }
 
   prv_save_settings();
