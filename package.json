@@ -1,0 +1,108 @@
+{
+  "name": "Titanium",
+  "author": "astosia",
+  "version": "1.1.0",
+  "keywords": [
+    "pebble",
+    "watchface",
+    "titanium",
+    "color",
+    "colorful",
+    "shadow",
+    "analog"
+  ],
+  "private": true,
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
+  "pebble": {
+    "displayName": "Titanium",
+    "uuid": "59daebe7-5e44-4e1c-a637-30c270509e0c",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk",
+      "diorite",
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "capabilities": [
+      "configurable"
+    ],
+    "messageKeys": [
+      "EnableSecondsHand",
+      "SecondsVisibleTime",
+      "EnableDate",
+      "BackgroundColor1",
+      "BackgroundColor2",
+      "TextColor1",
+      "TextColor2",
+      "TextColor3",
+      "DateColor",
+      "BWDateColor",
+      "HoursHandColor",
+      "HoursHandBorderColor",
+      "MinutesHandColor",
+      "MinutesHandBorderColor",
+      "SecondsHandColor",
+      "BWBackgroundColor1",
+      "BWBackgroundColor2",
+      "BWTextColor1",
+      "BWTextColor2",
+      "BWTheme",
+      "BWShadowOn",
+      "Font",
+      "BTQTColor",
+      "BWBTQTColor",
+      "VibeOn"
+    ],
+    "resources": {
+      "media": [
+        {
+          "file": "fonts/Digits.ttf",
+          "characterRegex": "[126]",
+          "name": "FONT_DIGITS_34",
+          "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+          ],
+          "type": "font"
+        },
+        {
+          "file": "fonts/Digits.ttf",
+          "characterRegex": "[126]",
+          "name": "FONT_DIGITS_38",
+          "targetPlatforms": [
+            "emery"
+          ],
+          "type": "font"
+        },
+        {
+          "file": "fonts/Conthrax-SemiBold.otf",
+          "name": "FONT_DATE_9",
+          "targetPlatforms": null,
+          "type": "font"
+        },
+        {
+          "file": "fonts/Conthrax-SemiBold.otf",
+          "name": "FONT_DATE_12",
+          "targetPlatforms": null,
+          "type": "font"
+        },
+        {
+          "file": "fonts/Dripicons",
+          "characterRegex": "[z]",
+          "name": "FONT_DRIPICONS_16",
+          "targetPlatforms": null,
+          "type": "font"
+        }
+      ]
+    }
+  }
+}
