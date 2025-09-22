@@ -1,11 +1,11 @@
 # Titanium
 Analogue Watchface with a shadow
 
-Colours are configurable
-Optional second hand
-"BT is disconnected" & "Quiet time is on" icons
-Vibrate on BT disconnect
-Day of the week autotranslates per watch language
+- Colours are configurable
+- Optional second hand
+- "BT is disconnected" & "Quiet time is on" icons
+- Vibrate on BT disconnect
+- Day of the week autotranslates per watch language
 
 
 Basalt (Peble Time and Pebble Time Steel)
