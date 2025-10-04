@@ -81,6 +81,12 @@ module.exports = [
         "defaultValue": "Colours"
       },
       {
+        "type": "toggle",
+       "label": "Shadow on",
+       "messageKey": "ShadowOn",
+       "defaultValue": true
+      },
+      {
         "type": "color",
         "label": "Background Colour",
         "messageKey": "BackgroundColor1",

@@ -7,7 +7,6 @@
 #include <pebble-fctx/ffont.h>
 
 // Constants for improved readability
-//#define SECONDS_VISIBLE_TIME_ALWAYS_ON 135
 #define SECONDS_TICK_INTERVAL_MS 1000
 
 // Main window and layers
@@ -24,7 +23,7 @@ static Layer *s_canvas_battery;
 static GRect bounds;
 static GRect bounds_seconds;
 // Fonts
-static GFont /*FontDigits,  FontLogo, FontBattery,*/
+static GFont
     #ifdef PBL_BW
     FontDate,
     FontBattery,
@@ -237,6 +236,7 @@ static void prv_default_settings(void) {
   settings.BWBTQTColor = GColorBlack;
   settings.BWThemeSelect = "wh";
   settings.BWShadowOn = true;
+  settings.ShadowOn = true;
   settings.Font = 1;
   settings.VibeOn = false;
 }
@@ -370,6 +370,7 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
   Tuple *btqt_color_t = dict_find(iter, MESSAGE_KEY_BTQTColor);
   Tuple *bwbtqt_color_t = dict_find(iter, MESSAGE_KEY_BWBTQTColor);
   Tuple *bwshadowon_t = dict_find(iter, MESSAGE_KEY_BWShadowOn);
+  Tuple *shadowon_t = dict_find(iter, MESSAGE_KEY_ShadowOn);
 
   if (vibe_t){
     if (vibe_t -> value -> int32 == 0){
@@ -469,6 +470,9 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
     layer_mark_dirty(s_canvas_second_hand);
   }
 
+
+
+
   if (bwthemeselect_t) {
           // Compare the string value received from the phone
           if (strcmp(bwthemeselect_t->value->cstring, "wh") == 0) {
@@ -555,6 +559,8 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
                 }
           }
 
+
+
   if (bg_color1_t) {
     settings.BackgroundColor1 = GColorFromHEX(bg_color1_t->value->int32);
     layer_mark_dirty(s_bg_layer);
@@ -564,11 +570,28 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
     layer_mark_dirty(s_date_battery_logo_layer);
     layer_mark_dirty(s_canvas_second_hand);
   }
-  if (bg_color2_t) {
-    settings.BackgroundColor2 = GColorFromHEX(bg_color2_t->value->int32);
+
+  if (shadowon_t) {
+    settings.ShadowOn = shadowon_t->value->int32 == 1;
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "color shadow is %d",settings.ShadowOn);
+
+    if(settings.ShadowOn){
+      if (bg_color2_t) {
+        settings.BackgroundColor2 = GColorFromHEX(bg_color2_t->value->int32);
+        settings_changed = true;
+      }
+    }
+    else {
+    settings.BackgroundColor2 = settings.BackgroundColor1;
+    }
     layer_mark_dirty(s_bg_layer);
     layer_mark_dirty(s_canvas_layer);
+    layer_mark_dirty(s_dial_layer);
+    layer_mark_dirty(s_dial_digits_layer);
+    layer_mark_dirty(s_date_battery_logo_layer);
+    layer_mark_dirty(s_canvas_second_hand);
   }
+
   if (text_color1_t) {
     settings.TextColor1 = GColorFromHEX(text_color1_t->value->int32);
     layer_mark_dirty(s_dial_layer);
@@ -1643,25 +1666,11 @@ static void prv_window_load(Window *window) {
   // Load fonts here, so they are available for the layers
     Digits_Font =  ffont_create_from_resource(RESOURCE_ID_FONT_DIGITS_FCTX);
     Date_Font =  ffont_create_from_resource(RESOURCE_ID_FONT_DATE_FCTX);
-
-
-  // #ifdef PBL_PLATFORM_EMERY
-  //   FontDigits = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIGITS_38));
-  //   FontDate = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_12));
-  //   FontBattery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_12));
-  //
-  // #else
-  //   FontDigits = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIGITS_34));
-  //   FontDate = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_9));
-  //   FontBattery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_10));
-  // #endif
-//    FontLogo = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_8));
     FontBTQTIcons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DRIPICONS_16));
     #ifdef PBL_BW
     FontDate = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_9));
     FontBattery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_10));
     FontLogo = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_8));
-
     #endif
   // Subscribe to the connection service to get Bluetooth status updates.
   // Add the following code in prv_window_load
@@ -1746,9 +1755,6 @@ static void prv_window_unload(Window *window) {
   layer_destroy(s_date_battery_logo_layer);
   ffont_destroy(Digits_Font);
   ffont_destroy(Date_Font);
-//  fonts_unload_custom_font(FontDigits);
-//  fonts_unload_custom_font(FontLogo);
-//  fonts_unload_custom_font(FontBattery);
   #ifdef PBL_BW
   fonts_unload_custom_font(FontDate);
   fonts_unload_custom_font(FontBattery);
