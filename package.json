@@ -1,7 +1,7 @@
 {
   "name": "Titanium",
   "author": "astosia",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "keywords": [
     "pebble",
     "watchface",
@@ -13,7 +13,9 @@
   ],
   "private": true,
   "dependencies": {
-    "pebble-clay": "^1.0.4"
+    "pebble-clay": "^1.0.4",
+    "pebble-fctx": "^1.6.0",
+    "pebble-fctx-compiler": "^1.2.2"
   },
   "pebble": {
     "displayName": "Titanium",
@@ -37,6 +39,10 @@
       "EnableSecondsHand",
       "SecondsVisibleTime",
       "EnableDate",
+      "EnableBattery",
+      "EnableBatteryLine",
+      "EnableLogo",
+      "LogoText",
       "BackgroundColor1",
       "BackgroundColor2",
       "TextColor1",
@@ -50,13 +56,16 @@
       "MinutesHandColor",
       "MinutesHandBorderColor",
       "SecondsHandColor",
+      "BatteryLineColor",
       "BWBackgroundColor1",
       "BWBackgroundColor2",
       "BWTextColor1",
       "BWTextColor2",
+      "BWTextColor3",
       "BWDateColor",
       "BWBTQTColor",
       "BWThemeSelect",
+      "ThemeSelect",
       "BWShadowOn",
       "Font",
       "VibeOn"
@@ -64,36 +73,30 @@
     "resources": {
       "media": [
         {
-          "file": "fonts/Digits.ttf",
-          "characterRegex": "[126]",
-          "name": "FONT_DIGITS_34",
+          "file": "fonts/Conthrax-SemiBold.otf",
+          "name": "FONT_DATE_9",
           "targetPlatforms": [
             "aplite",
-            "basalt",
-            "chalk",
             "diorite"
           ],
           "type": "font"
         },
         {
-          "file": "fonts/Digits.ttf",
-          "characterRegex": "[126]",
-          "name": "FONT_DIGITS_38",
+          "file": "fonts/Conthrax-SemiBold.otf",
+          "name": "FONT_DATE_8",
           "targetPlatforms": [
-            "emery"
+            "aplite",
+            "diorite"
           ],
           "type": "font"
         },
         {
           "file": "fonts/Conthrax-SemiBold.otf",
-          "name": "FONT_DATE_9",
-          "targetPlatforms": null,
-          "type": "font"
-        },
-        {
-          "file": "fonts/Conthrax-SemiBold.otf",
-          "name": "FONT_DATE_12",
-          "targetPlatforms": null,
+          "name": "FONT_DATE_10",
+          "targetPlatforms": [
+            "aplite",
+            "diorite"
+          ],
           "type": "font"
         },
         {
@@ -102,6 +105,18 @@
           "name": "FONT_DRIPICONS_16",
           "targetPlatforms": null,
           "type": "font"
+        },
+        {
+          "file": "data/TeknikalerOutline.ffont",
+          "name": "FONT_DIGITS_FCTX",
+          "targetPlatforms": null,
+          "type": "raw"
+        },
+        {
+          "file": "data/Conthrax-SemiBold2.ffont",
+          "name": "FONT_DATE_FCTX",
+          "targetPlatforms": null,
+          "type": "raw"
         }
       ]
     }
