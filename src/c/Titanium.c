@@ -208,7 +208,7 @@ static void prv_save_settings(void) {
 // Set default settings
 static void prv_default_settings(void) {
   settings.EnableSecondsHand = true;
-  settings.SecondsVisibleTime = 15;
+  settings.SecondsVisibleTime = 135;
   settings.EnableDate = true;
   settings.EnableBattery = true;
   settings.EnableBatteryLine = true;
@@ -235,6 +235,7 @@ static void prv_default_settings(void) {
   settings.BTQTColor = GColorBlack;
   settings.BWBTQTColor = GColorBlack;
   settings.BWThemeSelect = "wh";
+  settings.ThemeSelect = "wh";
   settings.BWShadowOn = true;
   settings.ShadowOn = true;
   settings.Font = 1;
@@ -260,7 +261,7 @@ static void timeout_handler(void *context) {
   layer_mark_dirty(s_canvas_second_hand);
   s_timeout_timer = NULL; // Set the handle to NULL after the timer expires
 
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "timeout event");
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "timeout event");
 
 }
 
@@ -289,8 +290,8 @@ static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
     s_timeout_timer = app_timer_register(SECONDS_TICK_INTERVAL_MS * settings.SecondsVisibleTime, timeout_handler, NULL);
     layer_mark_dirty(s_canvas_second_hand);
   }
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "tap event, visible seconds is %d",settings.SecondsVisibleTime);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "tap event show seconds is %d",showSeconds);
+  // APP_LOG(APP_LOG_LEVEL_DEBUG, "tap event, visible seconds is %d",settings.SecondsVisibleTime);
+  // APP_LOG(APP_LOG_LEVEL_DEBUG, "tap event show seconds is %d",showSeconds);
 
 }
 
@@ -349,6 +350,7 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
   Tuple *enable_logo_t = dict_find(iter, MESSAGE_KEY_EnableLogo);
   Tuple *logotext_t = dict_find(iter, MESSAGE_KEY_LogoText);
   Tuple *bwthemeselect_t = dict_find(iter, MESSAGE_KEY_BWThemeSelect);
+  Tuple *themeselect_t = dict_find(iter, MESSAGE_KEY_ThemeSelect);
   Tuple *bg_color1_t = dict_find(iter, MESSAGE_KEY_BackgroundColor1);
   Tuple *bg_color2_t = dict_find(iter, MESSAGE_KEY_BackgroundColor2);
   Tuple *text_color1_t = dict_find(iter, MESSAGE_KEY_TextColor1);
@@ -375,10 +377,10 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
   if (vibe_t){
     if (vibe_t -> value -> int32 == 0){
       settings.VibeOn = false;
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Vibe off");
+      //APP_LOG(APP_LOG_LEVEL_DEBUG, "Vibe off");
     } else {
       settings.VibeOn = true;
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Vibe on");
+      //APP_LOG(APP_LOG_LEVEL_DEBUG, "Vibe on");
     }
     layer_mark_dirty(s_canvas_bt_icon);
   }
@@ -493,7 +495,7 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
                     settings.BWTextColor3 = GColorBlack;
                     settings.BWBTQTColor = GColorBlack;
                       theme_settings_changed = true;
-                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme white selected");
+                    //    APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme white selected");
           } else if (strcmp(bwthemeselect_t->value->cstring, "bl") == 0) {
               // Set the theme and other settings for "bl"
                     settings.BWDateColor = GColorWhite;
@@ -512,7 +514,7 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
                     settings.BWTextColor3 = GColorWhite;
                     settings.BWBTQTColor = GColorWhite;
                       theme_settings_changed = true;
-                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme black selected");
+                    //    APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme black selected");
           } else if (strcmp(bwthemeselect_t->value->cstring, "cu") == 0) {
               // Set the theme for "cu" and handle custom colors
               settings.BWDateColor = GColorFromHEX(bwdate_color_t->value->int32);
@@ -555,96 +557,307 @@ static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) 
                     layer_mark_dirty(s_canvas_qt_icon);
                   }
                   theme_settings_changed = true;
-                    APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme custom selected");
+                  //  APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme custom selected");
+                }
+          }
+/////////////////////////////////////
+  if (themeselect_t) {
+          // Compare the string value received from the phone
+          if (strcmp(themeselect_t->value->cstring, "wh") == 0) {
+              // Set the theme and other settings for "wh"
+                    if (shadowon_t) {
+                      settings.ShadowOn = shadowon_t->value->int32 == 1;
+                    }
+                        if(settings.ShadowOn){
+                          settings.BackgroundColor2 = GColorLightGray;
+                        }
+                        else {
+                        settings.BackgroundColor2 = GColorWhite;
+                        }
+                    settings.BackgroundColor1 = GColorWhite;
+                    settings.TextColor1 = GColorWhite;
+                    settings.TextColor2 = GColorBlack;
+                    settings.TextColor3 = GColorBlack;
+                    settings.DateColor = GColorBlack;
+                    settings.HoursHandColor = GColorWhite;
+                    settings.HoursHandBorderColor = GColorBlack;
+                    settings.MinutesHandColor = GColorWhite;
+                    settings.MinutesHandBorderColor = GColorBlack;
+                    settings.SecondsHandColor = GColorOrange;
+                    settings.BatteryLineColor = GColorOrange;
+                    settings.BTQTColor = GColorBlack;
+                      theme_settings_changed = true;
+                    //    APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme white selected");
+          } else if (strcmp(themeselect_t->value->cstring, "bl") == 0) {
+              // Set the theme and other settings for "bl"
+
+                    settings.BackgroundColor1 = GColorBlack;
+                    if (shadowon_t) {
+                      settings.ShadowOn = shadowon_t->value->int32 == 1;
+                    }
+                        if(settings.ShadowOn){
+                          settings.BackgroundColor2 = GColorDarkGray;
+                        }
+                        else {
+                        settings.BackgroundColor2 = GColorBlack;
+                        }
+                    settings.TextColor1 = GColorBlack;
+                    settings.TextColor2 = GColorWhite;
+                    settings.TextColor3 = GColorWhite;
+                    settings.DateColor = GColorWhite;
+                    settings.HoursHandColor = GColorBlack;
+                    settings.HoursHandBorderColor = GColorWhite;
+                    settings.MinutesHandColor = GColorBlack;
+                    settings.MinutesHandBorderColor = GColorWhite;
+                    settings.SecondsHandColor = GColorOrange;
+                    settings.BatteryLineColor = GColorOrange;
+                    settings.BTQTColor = GColorWhite;
+                      theme_settings_changed = true;
+                      //  APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme black selected");
+          } else if (strcmp(themeselect_t->value->cstring, "bu") == 0) {
+              // Set the theme and other settings for "bl"
+
+                    settings.BackgroundColor1 = GColorDukeBlue;
+                    if (shadowon_t) {
+                      settings.ShadowOn = shadowon_t->value->int32 == 1;
+                    }
+                        if(settings.ShadowOn){
+                          settings.BackgroundColor2 = GColorOxfordBlue;
+                        }
+                        else {
+                        settings.BackgroundColor2 = GColorDukeBlue;
+                        }
+                    settings.TextColor1 = GColorBlack;
+                    settings.TextColor2 = GColorIcterine;
+                    settings.TextColor3 = GColorIcterine;
+                    settings.DateColor = GColorWhite;
+                    settings.HoursHandColor = GColorDukeBlue;
+                    settings.HoursHandBorderColor = GColorYellow;
+                    settings.MinutesHandColor = GColorDukeBlue;
+                    settings.MinutesHandBorderColor = GColorYellow;
+                    settings.SecondsHandColor = GColorRed;
+                    settings.BatteryLineColor = GColorRed;
+                    settings.BTQTColor = GColorWhite;
+                      theme_settings_changed = true;
+                      //  APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme blue selected");
+          } else if (strcmp(themeselect_t->value->cstring, "pl") == 0) {
+              // Set the theme and other settings for "bl"
+
+                    settings.BackgroundColor1 = GColorPurple;
+                    if (shadowon_t) {
+                      settings.ShadowOn = shadowon_t->value->int32 == 1;
+                    }
+                        if(settings.ShadowOn){
+                          settings.BackgroundColor2 = GColorImperialPurple;
+                        }
+                        else {
+                        settings.BackgroundColor2 = GColorPurple;
+                        }
+                    settings.TextColor1 = GColorWhite;
+                    settings.TextColor2 = GColorBlack;
+                    settings.TextColor3 = GColorBlack;
+                    settings.DateColor = GColorWhite;
+                    settings.HoursHandColor = GColorLightGray;
+                    settings.HoursHandBorderColor = GColorBlack;
+                    settings.MinutesHandColor = GColorLightGray;
+                    settings.MinutesHandBorderColor = GColorBlack;
+                    settings.SecondsHandColor = GColorBulgarianRose;
+                    settings.BatteryLineColor = GColorBulgarianRose;
+                    settings.BTQTColor = GColorWhite;
+                      theme_settings_changed = true;
+                      //  APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme purple selected");
+          } else if (strcmp(themeselect_t->value->cstring, "gr") == 0) {
+              // Set the theme and other settings for "gr"
+
+                    settings.BackgroundColor1 = GColorBlack;
+                    if (shadowon_t) {
+                      settings.ShadowOn = shadowon_t->value->int32 == 1;
+                    }
+                        if(settings.ShadowOn){
+                          settings.BackgroundColor2 = GColorDarkGreen;
+                        }
+                        else {
+                        settings.BackgroundColor2 = GColorBlack;
+                        }
+                    settings.TextColor1 = GColorBlack;
+                    settings.TextColor2 = GColorBrightGreen;
+                    settings.TextColor3 = GColorBrightGreen;
+                    settings.DateColor = GColorBrightGreen;
+                    settings.HoursHandColor = GColorDarkGreen;
+                    settings.HoursHandBorderColor = GColorBrightGreen;
+                    settings.MinutesHandColor = GColorDarkGreen;
+                    settings.MinutesHandBorderColor = GColorBrightGreen;
+                    settings.SecondsHandColor = GColorPastelYellow;
+                    settings.BatteryLineColor = GColorPastelYellow;
+                    settings.BTQTColor = GColorBrightGreen;
+                      theme_settings_changed = true;
+                      //  APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme black & green selected");
+          } else if (strcmp(themeselect_t->value->cstring, "cu") == 0) {
+              // Set the theme for "cu" and handle custom colors
+              // settings.DateColor = GColorFromHEX(date_color_t->value->int32);
+              //       layer_mark_dirty(s_canvas_layer);
+
+                  if (bg_color1_t) {
+                    settings.BackgroundColor1 = GColorFromHEX(bg_color1_t->value->int32);
+                    settings_changed = true;
+                  }
+
+                  if (shadowon_t) {
+                    settings.ShadowOn = shadowon_t->value->int32 == 1;
+
+                      if(settings.ShadowOn){
+                        if (bg_color2_t) {
+                          settings.BackgroundColor2 = GColorFromHEX(bg_color2_t->value->int32);
+                          settings_changed = true;
+                        }
+                      }
+                      else {
+                      settings.BackgroundColor2 = settings.BackgroundColor1;
+                      }
+                  }
+
+                  if (text_color1_t) {
+                    settings.TextColor1 = GColorFromHEX(text_color1_t->value->int32);
+                    layer_mark_dirty(s_dial_layer);
+                    layer_mark_dirty(s_dial_digits_layer);
+                    layer_mark_dirty(s_date_battery_logo_layer);
+                  }
+                  if (text_color2_t) {
+                    settings.TextColor2 = GColorFromHEX(text_color2_t->value->int32);
+                    layer_mark_dirty(s_bg_layer);
+                  }
+                  if (text_color3_t) {
+                    settings.TextColor3 = GColorFromHEX(text_color3_t->value->int32);
+                    layer_mark_dirty(s_dial_layer);
+                    layer_mark_dirty(s_dial_digits_layer);
+                  }
+                  if (date_color_t) {
+                    settings.DateColor = GColorFromHEX(date_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_layer);
+                    layer_mark_dirty(s_date_battery_logo_layer);
+                  }
+                  if (hours_color_t) {
+                    settings.HoursHandColor = GColorFromHEX(hours_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_layer);
+                    layer_mark_dirty(s_canvas_second_hand);
+                  }
+                  if (hours_border_t) {
+                    settings.HoursHandBorderColor = GColorFromHEX(hours_border_t->value->int32);
+                    layer_mark_dirty(s_canvas_layer);
+                  }
+                  if (minutes_color_t) {
+                    settings.MinutesHandColor = GColorFromHEX(minutes_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_layer);
+                    layer_mark_dirty(s_canvas_second_hand);
+                  }
+                  if (minutes_border_t) {
+                    settings.MinutesHandBorderColor = GColorFromHEX(minutes_border_t->value->int32);
+                    layer_mark_dirty(s_canvas_layer);
+                  }
+                  if (seconds_color_t) {
+                    settings.SecondsHandColor = GColorFromHEX(seconds_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_second_hand);
+                  }
+                  if (battery_line_color_t) {
+                    settings.BatteryLineColor = GColorFromHEX(battery_line_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_battery);
+                  }
+                  if (btqt_color_t) {
+                    settings.BTQTColor = GColorFromHEX(btqt_color_t->value->int32);
+                    layer_mark_dirty(s_canvas_bt_icon);
+                    layer_mark_dirty(s_canvas_qt_icon);
+                  }
+                  theme_settings_changed = true;
+                //    APP_LOG(APP_LOG_LEVEL_DEBUG, "Theme custom selected");
                 }
           }
 
+                  ///////////////////////////////
 
+  // if (bg_color1_t) {
+  //   settings.BackgroundColor1 = GColorFromHEX(bg_color1_t->value->int32);
+  //   layer_mark_dirty(s_bg_layer);
+  //   layer_mark_dirty(s_canvas_layer);
+  //   layer_mark_dirty(s_dial_layer);
+  //   layer_mark_dirty(s_dial_digits_layer);
+  //   layer_mark_dirty(s_date_battery_logo_layer);
+  //   layer_mark_dirty(s_canvas_second_hand);
+  // }
 
-  if (bg_color1_t) {
-    settings.BackgroundColor1 = GColorFromHEX(bg_color1_t->value->int32);
-    layer_mark_dirty(s_bg_layer);
-    layer_mark_dirty(s_canvas_layer);
-    layer_mark_dirty(s_dial_layer);
-    layer_mark_dirty(s_dial_digits_layer);
-    layer_mark_dirty(s_date_battery_logo_layer);
-    layer_mark_dirty(s_canvas_second_hand);
-  }
+  // if (shadowon_t) {
+  //   settings.ShadowOn = shadowon_t->value->int32 == 1;
+  //   APP_LOG(APP_LOG_LEVEL_DEBUG, "color shadow is %d",settings.ShadowOn);
+  //
+  //   if(settings.ShadowOn){
+  //     if (bg_color2_t) {
+  //       settings.BackgroundColor2 = GColorFromHEX(bg_color2_t->value->int32);
+  //       settings_changed = true;
+  //     }
+  //   }
+  //   else {
+  //   settings.BackgroundColor2 = settings.BackgroundColor1;
+  //   }
+  //   layer_mark_dirty(s_bg_layer);
+  //   layer_mark_dirty(s_canvas_layer);
+  //   layer_mark_dirty(s_dial_layer);
+  //   layer_mark_dirty(s_dial_digits_layer);
+  //   layer_mark_dirty(s_date_battery_logo_layer);
+  //   layer_mark_dirty(s_canvas_second_hand);
+  // }
 
-  if (shadowon_t) {
-    settings.ShadowOn = shadowon_t->value->int32 == 1;
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "color shadow is %d",settings.ShadowOn);
-
-    if(settings.ShadowOn){
-      if (bg_color2_t) {
-        settings.BackgroundColor2 = GColorFromHEX(bg_color2_t->value->int32);
-        settings_changed = true;
-      }
-    }
-    else {
-    settings.BackgroundColor2 = settings.BackgroundColor1;
-    }
-    layer_mark_dirty(s_bg_layer);
-    layer_mark_dirty(s_canvas_layer);
-    layer_mark_dirty(s_dial_layer);
-    layer_mark_dirty(s_dial_digits_layer);
-    layer_mark_dirty(s_date_battery_logo_layer);
-    layer_mark_dirty(s_canvas_second_hand);
-  }
-
-  if (text_color1_t) {
-    settings.TextColor1 = GColorFromHEX(text_color1_t->value->int32);
-    layer_mark_dirty(s_dial_layer);
-    layer_mark_dirty(s_dial_digits_layer);
-    layer_mark_dirty(s_date_battery_logo_layer);
-  }
-  if (text_color2_t) {
-    settings.TextColor2 = GColorFromHEX(text_color2_t->value->int32);
-    layer_mark_dirty(s_bg_layer);
-  }
-  if (text_color3_t) {
-    settings.TextColor3 = GColorFromHEX(text_color3_t->value->int32);
-    layer_mark_dirty(s_dial_layer);
-    layer_mark_dirty(s_dial_digits_layer);
-    //layer_mark_dirty(s_date_battery_logo_layer);
-  }
-  if (date_color_t) {
-    settings.DateColor = GColorFromHEX(date_color_t->value->int32);
-    layer_mark_dirty(s_canvas_layer);
-    layer_mark_dirty(s_date_battery_logo_layer);
-  }
-
-  if (hours_color_t) {
-    settings.HoursHandColor = GColorFromHEX(hours_color_t->value->int32);
-    layer_mark_dirty(s_canvas_layer);
-    layer_mark_dirty(s_canvas_second_hand);
-  }
-  if (hours_border_t) {
-    settings.HoursHandBorderColor = GColorFromHEX(hours_border_t->value->int32);
-    layer_mark_dirty(s_canvas_layer);
-  }
-  if (minutes_color_t) {
-    settings.MinutesHandColor = GColorFromHEX(minutes_color_t->value->int32);
-    layer_mark_dirty(s_canvas_layer);
-    layer_mark_dirty(s_canvas_second_hand);
-  }
-  if (minutes_border_t) {
-    settings.MinutesHandBorderColor = GColorFromHEX(minutes_border_t->value->int32);
-    layer_mark_dirty(s_canvas_layer);
-  }
-  if (seconds_color_t) {
-    settings.SecondsHandColor = GColorFromHEX(seconds_color_t->value->int32);
-    layer_mark_dirty(s_canvas_second_hand);
-  }
-  if (battery_line_color_t) {
-    settings.BatteryLineColor = GColorFromHEX(battery_line_color_t->value->int32);
-    layer_mark_dirty(s_canvas_battery);
-  }
-  if (btqt_color_t) {
-    settings.BTQTColor = GColorFromHEX(btqt_color_t->value->int32);
-    layer_mark_dirty(s_canvas_bt_icon);
-    layer_mark_dirty(s_canvas_qt_icon);
-  }
+  // if (text_color1_t) {
+  //   settings.TextColor1 = GColorFromHEX(text_color1_t->value->int32);
+  //   layer_mark_dirty(s_dial_layer);
+  //   layer_mark_dirty(s_dial_digits_layer);
+  //   layer_mark_dirty(s_date_battery_logo_layer);
+  // }
+  // if (text_color2_t) {
+  //   settings.TextColor2 = GColorFromHEX(text_color2_t->value->int32);
+  //   layer_mark_dirty(s_bg_layer);
+  // }
+  // if (text_color3_t) {
+  //   settings.TextColor3 = GColorFromHEX(text_color3_t->value->int32);
+  //   layer_mark_dirty(s_dial_layer);
+  //   layer_mark_dirty(s_dial_digits_layer);
+  //   //layer_mark_dirty(s_date_battery_logo_layer);
+  // }
+  // if (date_color_t) {
+  //   settings.DateColor = GColorFromHEX(date_color_t->value->int32);
+  //   layer_mark_dirty(s_canvas_layer);
+  //   layer_mark_dirty(s_date_battery_logo_layer);
+  // }
+  //
+  // if (hours_color_t) {
+  //   settings.HoursHandColor = GColorFromHEX(hours_color_t->value->int32);
+  //   layer_mark_dirty(s_canvas_layer);
+  //   layer_mark_dirty(s_canvas_second_hand);
+  // }
+  // if (hours_border_t) {
+  //   settings.HoursHandBorderColor = GColorFromHEX(hours_border_t->value->int32);
+  //   layer_mark_dirty(s_canvas_layer);
+  // }
+  // if (minutes_color_t) {
+  //   settings.MinutesHandColor = GColorFromHEX(minutes_color_t->value->int32);
+  //   layer_mark_dirty(s_canvas_layer);
+  //   layer_mark_dirty(s_canvas_second_hand);
+  // }
+  // if (minutes_border_t) {
+  //   settings.MinutesHandBorderColor = GColorFromHEX(minutes_border_t->value->int32);
+  //   layer_mark_dirty(s_canvas_layer);
+  // }
+  // if (seconds_color_t) {
+  //   settings.SecondsHandColor = GColorFromHEX(seconds_color_t->value->int32);
+  //   layer_mark_dirty(s_canvas_second_hand);
+  // }
+  // if (battery_line_color_t) {
+  //   settings.BatteryLineColor = GColorFromHEX(battery_line_color_t->value->int32);
+  //   layer_mark_dirty(s_canvas_battery);
+  // }
+  // if (btqt_color_t) {
+  //   settings.BTQTColor = GColorFromHEX(btqt_color_t->value->int32);
+  //   layer_mark_dirty(s_canvas_bt_icon);
+  //   layer_mark_dirty(s_canvas_qt_icon);
+  // }
 
   if (settings_changed) {
     layer_mark_dirty(s_bg_layer);
@@ -1003,9 +1216,9 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 
 
     ///use below for testing and for screenshots
-    //  int seconds = 8;
-      // int minutes = 30;
-      // int hours = 9;
+     //int seconds = 8;
+       // minutes = 30;
+       // hours = 9;
 
 
     int xPosition;
@@ -1169,15 +1382,15 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 
     ///use below for testing and for screenshots
     //  int seconds = 8;
-      // int minutes = 30;
-      // int hours = 9;
+       // minutes = 30;
+       // hours = 9;
 
     FPoint weekday_pos;
     FPoint date_pos;
 
 
-    int weekday_loc_x = 0;
-    int weekday_loc_y = 0;
+    // int weekday_loc_x = 0;
+    // int weekday_loc_y = 0;
 
     #ifdef PBL_PLATFORM_EMERY
           int font_size_date = 12;
@@ -1210,9 +1423,9 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
       weekday_pos.y = INT_TO_FIXED(config.BottomYPosition + yOffset + yOffsetFctx + yWeekdayDateOffset);
       date_pos.x = INT_TO_FIXED(config.BottomXPosition + xOffset + xOffsetFctxDate + xDateOffset);
       date_pos.y = INT_TO_FIXED(config.BottomYPosition + yOffset + yOffsetFctx + yWeekdayDateOffset);
-       weekday_loc_x = FIXED_TO_INT(weekday_pos.x);
-       weekday_loc_y = FIXED_TO_INT(weekday_pos.y);
-        APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is bottom position ");
+       // weekday_loc_x = FIXED_TO_INT(weekday_pos.x);
+       // weekday_loc_y = FIXED_TO_INT(weekday_pos.y);
+      //  APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is bottom position ");
 
     }
     else if ((minutes > 7 && minutes < 23)||
@@ -1225,9 +1438,9 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
       weekday_pos.y = INT_TO_FIXED(bounds.size.h/2 + yOffset + yOffsetFctx+ yWeekdayDateOffset);
       date_pos.x = INT_TO_FIXED(config.LeftxPosition + xOffset + xOffsetFctxDate + xDateOffset);
       date_pos.y = INT_TO_FIXED(bounds.size.h/2 + yOffset + yOffsetFctx + yWeekdayDateOffset);
-      weekday_loc_x = FIXED_TO_INT(weekday_pos.x);
-      weekday_loc_y = FIXED_TO_INT(weekday_pos.y);
-        APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is left position");
+      // weekday_loc_x = FIXED_TO_INT(weekday_pos.x);
+      // weekday_loc_y = FIXED_TO_INT(weekday_pos.y);
+      //  APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is left position");
 
     }
     else{
@@ -1239,12 +1452,12 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
       weekday_pos.y = INT_TO_FIXED(bounds.size.h/2 + yOffset + yOffsetFctx + yWeekdayDateOffset);
       date_pos.x = INT_TO_FIXED(bounds.size.w/2 + xOffset + xOffsetFctxDate + xDateOffset);
       date_pos.y = INT_TO_FIXED(bounds.size.h/2 + yOffset + yOffsetFctx + yWeekdayDateOffset);
-        weekday_loc_x = FIXED_TO_INT(weekday_pos.x);
-        weekday_loc_y = FIXED_TO_INT(weekday_pos.y);
-        APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is right position");
+        // weekday_loc_x = FIXED_TO_INT(weekday_pos.x);
+        // weekday_loc_y = FIXED_TO_INT(weekday_pos.y);
+      //  APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is right position");
 
     }
-    APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is %d, %d", weekday_loc_x, weekday_loc_y);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is %d, %d", weekday_loc_x, weekday_loc_y);
     GRect DateShadowRect =
      //  (0, offsetdate, bounds3.size.w, bounds1.size.h/4);
        GRect(xPosition + xOffset, yPosition + yOffset, ShadowAndMaskWidth, ShadowAndMaskHeight);
@@ -1370,7 +1583,8 @@ static void layer_update_proc_seconds_hand(Layer *layer, GContext *ctx) {
   GRect bounds = layer_get_bounds(layer);
   seconds = prv_tick_time->tm_sec;
   //for test & screenshots
-  //int seconds = 8;
+  //int
+  // seconds = 8;
 
   if (!settings.EnableSecondsHand || !showSeconds) {
     seconds = 0;
@@ -1418,12 +1632,12 @@ static void layer_update_proc_battery_line(Layer *layer, GContext *ctx) {
 //Update procedure for the BT Icon layer
 static void layer_update_proc_bt(Layer * layer, GContext * ctx){
   GRect bounds = layer_get_bounds(layer);
-  // int minutes = prv_tick_time->tm_min;
-  // int hours = prv_tick_time->tm_hour % 12;
+   minutes = prv_tick_time->tm_min;
+   hours = prv_tick_time->tm_hour % 12;
 
 //use this for testing
-  // int minutes = 30;
-  // int hours = 9;
+   // minutes = 30;
+   // hours = 9;
 
       int xPosition;
       int yPosition;
@@ -1483,12 +1697,12 @@ static void layer_update_proc_bt(Layer * layer, GContext * ctx){
 static void layer_update_proc_qt(Layer * layer, GContext * ctx){
 
   GRect bounds = layer_get_bounds(layer);
-  // int minutes = prv_tick_time->tm_min;
-  // int hours = prv_tick_time->tm_hour % 12;
+   minutes = prv_tick_time->tm_min;
+   hours = prv_tick_time->tm_hour % 12;
 
 //use this for testing
-  // int minutes = 30;
-  // int hours = 9;
+   // minutes = 30;
+   // hours = 9;
 
       int xPosition;
       int yPosition;
@@ -1551,15 +1765,15 @@ static void hour_min_hands_canvas_update_proc(Layer *layer, GContext *ctx) {
 
 //use these for live version
 
-  int minutes = prv_tick_time->tm_min;
-  int hours = prv_tick_time->tm_hour % 12;
-  //int seconds = prv_tick_time->tm_sec;
+   minutes = prv_tick_time->tm_min;
+   hours = prv_tick_time->tm_hour % 12;
+
 
   ///use below for testing and for screenshots
   //  int seconds = 8;
     // int minutes = 30;
     // int hours = 9;
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "minutes in hour_min_hands_canvas_update_proc is %d", minutes);
+  //  APP_LOG(APP_LOG_LEVEL_DEBUG, "minutes in hour_min_hands_canvas_update_proc is %d", minutes);
 
   // #ifdef SECOND
   //   seconds = SECOND;
