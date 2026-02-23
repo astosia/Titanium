@@ -1,7 +1,7 @@
 {
   "name": "Titanium",
   "author": "astosia",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "keywords": [
     "pebble",
     "watchface",
@@ -13,8 +13,8 @@
   ],
   "private": true,
   "dependencies": {
-    "pebble-clay": "^1.0.4",
-    "pebble-fctx": "^1.6.0",
+    "@rebble/clay": "^1.0.6",
+    "pebble-fctx": "^1.6.5",
     "pebble-fctx-compiler": "^1.2.2"
   },
   "pebble": {
@@ -27,7 +27,9 @@
       "basalt",
       "chalk",
       "diorite",
-      "emery"
+      "emery",
+      "flint",
+      "gabbro"
     ],
     "watchapp": {
       "watchface": true
@@ -77,7 +79,8 @@
           "name": "FONT_DATE_9",
           "targetPlatforms": [
             "aplite",
-            "diorite"
+            "diorite",
+            "flint"
           ],
           "type": "font"
         },
@@ -86,7 +89,8 @@
           "name": "FONT_DATE_8",
           "targetPlatforms": [
             "aplite",
-            "diorite"
+            "diorite",
+            "flint"
           ],
           "type": "font"
         },
@@ -95,12 +99,13 @@
           "name": "FONT_DATE_10",
           "targetPlatforms": [
             "aplite",
-            "diorite"
+            "diorite",
+            "flint"
           ],
           "type": "font"
         },
         {
-          "file": "fonts/Dripicons",
+          "file": "fonts/dripicons-v2.ttf",
           "characterRegex": "[z]",
           "name": "FONT_DRIPICONS_16",
           "targetPlatforms": null,

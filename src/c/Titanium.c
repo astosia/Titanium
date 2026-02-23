@@ -67,6 +67,28 @@ typedef struct {
   int BatteryYOffset;
   int BatteryLineYOffset;
   int LogoYOffset;
+  int font_size_digits;
+  int font_size_battery;
+  int font_size_date;
+  int font_size_logo;
+  int six_pos_x;
+  int six_pos_y;
+  int twelve_pos_x;
+  int twelve_pos_y;
+  int date_pos_x;
+  int date_pos_y;
+  int battery_pos_z;
+  int battery_pos_y;
+  int battery_line;
+  int second_hand_a;
+  int second_hand_b;
+  int hour_hand_a;
+  int min_hand_a;
+  int circle_radius_adj;
+  int tick_mask_radius_adj;
+  GRect dial_digits_mask_a[1];
+  GRect dial_digits_mask_b[1];
+  GRect dial_digits_mask_c[1];
 } UIConfig;
 
 #ifdef PBL_PLATFORM_EMERY
@@ -92,12 +114,77 @@ static const UIConfig config = {
 .QTIconYOffset = 21,
 .BatteryYOffset = 53-4 +3-1,
 .BatteryLineYOffset = 66,
-.LogoYOffset = 69+1
+.LogoYOffset = 69+1,
+.font_size_digits = 36,
+.font_size_battery = 14,
+.font_size_date = 12,
+.font_size_logo = 10,
+.six_pos_x = 2,
+.six_pos_y = -40 + 9,
+.twelve_pos_x = - 2 + 1,
+.twelve_pos_y = -3,
+.battery_pos_z = -2,
+.battery_pos_y = 4,
+.battery_line = 63, //sized to the width of the default logo TITANIUM
+.second_hand_a = 20,
+.second_hand_b = 22,
+.hour_hand_a = 45,
+.min_hand_a = 20,
+.circle_radius_adj = 18,
+.tick_mask_radius_adj = 12,
+.dial_digits_mask_a = {{{100-15,23},{39,7}}},
+.dial_digits_mask_b = {{{100-19,0},{39,27}}},
+.dial_digits_mask_c = {{{100-19,228-19},{31,27}}}
+};
+#elif defined(PBL_PLATFORM_GABBRO)
+static const UIConfig config = {
+.BottomXPosition = 46+30,
+.BottomYPosition = 168+22+3,
+.LeftxPosition = 16,
+.xOffset = 22,
+.yOffset = -8,
+.xOffsetFctxWeekday = 38/2  -1,
+.xOffsetFctxDate = 22/2 + 1,
+.yOffsetFctx = 3,
+.xyMaskOffset = 6,
+.xWeekdayOffset = 2,
+.yWeekdayDateOffset = 1,
+.xDateOffset = 41,
+.ShadowAndMaskWidth = 64,
+.ShadowAndMaskHeight = 17,
+.WeekdayWidth = 38,
+.DateWidth = 22,
+.WeekdayDateHeight = 13,
+.BTIconYOffset = -21,
+.QTIconYOffset = 21,
+.BatteryYOffset = 53-4 +3-1,
+.BatteryLineYOffset = 66,
+.LogoYOffset = 69+1+1,
+.font_size_digits = 36,
+.font_size_battery = 14,
+.font_size_date = 12,
+.font_size_logo = 10,
+.six_pos_x = 2,
+.six_pos_y = - 40 + 9,
+.twelve_pos_x = - 2 + 1,
+.twelve_pos_y = -3,
+.battery_pos_z = -2,
+.battery_pos_y = 4,
+.battery_line = 63,
+.second_hand_a = 35,
+.second_hand_b = 22,
+.hour_hand_a = 60,
+.min_hand_a = 34,
+.circle_radius_adj = 17,
+.tick_mask_radius_adj = 12,
+.dial_digits_mask_a = {{{130-15,23-2},{39,7+2}}},
+.dial_digits_mask_b = {{{130-19,0},{39,27}}},
+.dial_digits_mask_c = {{{130-19,260-19},{31,27}}}
 };
 #elif defined(PBL_BW)
 static const UIConfig config = {
 .BottomXPosition = 38,
-.BottomYPosition = 126,
+.BottomYPosition = 126-3,
 .LeftxPosition = 6,
 .xOffset = 10,
 .yOffset = -7,
@@ -117,7 +204,27 @@ static const UIConfig config = {
 .QTIconYOffset = 18,
 .BatteryYOffset = 40-4,
 .BatteryLineYOffset = 49,
-.LogoYOffset = 52+1
+.LogoYOffset = 52+1,
+.font_size_digits = 34,
+.font_size_battery = 10,
+.font_size_date = 9,
+.font_size_logo = 8,
+.six_pos_x = 2,
+.six_pos_y = - 38 + 9,
+.twelve_pos_x = - 2 + 1,
+.twelve_pos_y = -2,
+.battery_pos_z = 0,
+.battery_pos_y = 4,
+.battery_line = 51,
+.second_hand_a = 20,
+.second_hand_b = 22,
+.hour_hand_a = 35,
+.min_hand_a = 22,
+.circle_radius_adj = 18,
+.tick_mask_radius_adj = 12,
+.dial_digits_mask_a = {{{72-14,22},{36,7}}},
+.dial_digits_mask_b = {{{72-18,0},{36,26}}},
+.dial_digits_mask_c = {{{72-13,168-26},{28,26}}}
 };
 #elif defined(PBL_ROUND)
 static const UIConfig config = {
@@ -142,12 +249,32 @@ static const UIConfig config = {
 .QTIconYOffset = 18,
 .BatteryYOffset = 40-4,
 .BatteryLineYOffset = 49,
-.LogoYOffset = 52+1
+.LogoYOffset = 52+1,
+.font_size_digits = 34,
+.font_size_battery = 10,
+.font_size_date = 9,
+.font_size_logo = 8,
+.six_pos_x = 2,
+.six_pos_y = - 38 + 9,
+.twelve_pos_x = - 2 + 1,
+.twelve_pos_y = -2,
+.battery_pos_z = 0,
+.battery_pos_y = 4,
+.battery_line = 51,
+.second_hand_a = 35,
+.second_hand_b = 22,
+.hour_hand_a = 50,
+.min_hand_a = 34,
+.circle_radius_adj = 17,
+.tick_mask_radius_adj = 12,
+.dial_digits_mask_a = {{{90-14,22},{36,7}}},
+.dial_digits_mask_b = {{{90-18,0},{36,26}}},
+.dial_digits_mask_c = {{{90-13,180-26},{28,26}}}
 };
 #else // Default for other platforms
 static const UIConfig config = {
 .BottomXPosition = 38,
-.BottomYPosition = 126,
+.BottomYPosition = 126-3,
 .LeftxPosition = 7,
 .xOffset = 10,
 .yOffset = -7,
@@ -167,7 +294,27 @@ static const UIConfig config = {
 .QTIconYOffset = 18,
 .BatteryYOffset = 40-4,
 .BatteryLineYOffset = 49,
-.LogoYOffset = 52+1
+.LogoYOffset = 52+1,
+.font_size_digits = 34,
+.font_size_battery = 10,
+.font_size_date = 9,
+.font_size_logo = 8,
+.six_pos_x = 2,
+.six_pos_y = - 38 + 9,
+.twelve_pos_x = - 2 + 1,
+.twelve_pos_y = -2,
+.battery_pos_z = 0,
+.battery_pos_y = 4,
+.battery_line = 51,
+.second_hand_a = 20,
+.second_hand_b = 22,
+.hour_hand_a = 35,
+.min_hand_a = 22,
+.circle_radius_adj = 18,
+.tick_mask_radius_adj = 12,
+.dial_digits_mask_a = {{{72-14,22},{36,7}}},
+.dial_digits_mask_b = {{{72-18,0},{36,26}}},
+.dial_digits_mask_c = {{{72-13,168-26},{28,26}}}
 };
 #endif
 
@@ -255,7 +402,7 @@ static void timeout_handler(void *context) {
   showSeconds = false;
 
   // Unsubscribe from second ticks to save power
-  tick_timer_service_unsubscribe();
+  //// tick_timer_service_unsubscribe();
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
   layer_mark_dirty(s_canvas_second_hand);
@@ -265,7 +412,6 @@ static void timeout_handler(void *context) {
 
 }
 
-// Accelerometer tap handler for seconds hand visibility
 static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
    if (ignore_next_tap) {
        ignore_next_tap = false; // Reset the flag for the next tap
@@ -274,25 +420,25 @@ static void accel_tap_handler(AccelAxisType axis, int32_t direction) {
 
   // Only handle if the seconds hand setting is enabled and not already always on
   if (settings.EnableSecondsHand && settings.SecondsVisibleTime < 135) {
+      // If a timer is already running, cancel it
+      if (s_timeout_timer) {
+        app_timer_cancel(s_timeout_timer);
+        s_timeout_timer = NULL;
+      }
+
+      // Only subscribe to second ticks if not already subscribed
+      if (!showSeconds) {
+      //   tick_timer_service_unsubscribe();
+         tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
+      //   layer_mark_dirty(s_canvas_second_hand);
+      }
+      
       showSeconds = true;
 
-    // If a timer is already running, cancel it
-    if (s_timeout_timer) {
-      app_timer_cancel(s_timeout_timer);
-      s_timeout_timer = NULL;
-    }
-
-    // Subscribe to second ticks
-    tick_timer_service_unsubscribe();
-    tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
-
-    // Register a new timer to hide the seconds hand
-    s_timeout_timer = app_timer_register(SECONDS_TICK_INTERVAL_MS * settings.SecondsVisibleTime, timeout_handler, NULL);
-    layer_mark_dirty(s_canvas_second_hand);
+      // Register a new timer to hide the seconds hand
+      s_timeout_timer = app_timer_register(SECONDS_TICK_INTERVAL_MS * settings.SecondsVisibleTime, timeout_handler, NULL);
+      layer_mark_dirty(s_canvas_second_hand);
   }
-  // APP_LOG(APP_LOG_LEVEL_DEBUG, "tap event, visible seconds is %d",settings.SecondsVisibleTime);
-  // APP_LOG(APP_LOG_LEVEL_DEBUG, "tap event show seconds is %d",showSeconds);
-
 }
 
 static void bluetooth_vibe_icon (bool connected) {
@@ -1122,11 +1268,9 @@ static void update_dial_digits_fctx_layer (Layer *layer, GContext *ctx) {
   fctx_init_context(&fctx, ctx);
   fctx_set_color_bias(&fctx, 0);
 
-  #ifdef PBL_PLATFORM_EMERY
-    int font_size_digits = 36;
-  #else
-    int font_size_digits = 34;
-  #endif
+ 
+  int font_size_digits = config.font_size_digits;
+  
 
   fctx_set_fill_color(&fctx, PBL_IF_BW_ELSE(settings.BWTextColor3, settings.TextColor3));
 
@@ -1135,13 +1279,8 @@ static void update_dial_digits_fctx_layer (Layer *layer, GContext *ctx) {
   fctx_begin_fill(&fctx);
   fctx_set_text_em_height(&fctx, Digits_Font, font_size_digits);
 
-  #ifdef PBL_PLATFORM_EMERY
-    six_pos.x = INT_TO_FIXED((bounds.size.w / 2) + 2);
-    six_pos.y = INT_TO_FIXED(bounds.size.h - 40 + 9);
-  #else
-    six_pos.x = INT_TO_FIXED((bounds.size.w / 2) + 2);
-    six_pos.y = INT_TO_FIXED(bounds.size.h - 38 + 9);
-  #endif
+  six_pos.x = INT_TO_FIXED((bounds.size.w / 2) + config.six_pos_x);
+  six_pos.y = INT_TO_FIXED(bounds.size.h + config.six_pos_y);
 
   char sixdraw [2];
   snprintf(sixdraw, sizeof(sixdraw), "%s", "6");
@@ -1156,17 +1295,8 @@ static void update_dial_digits_fctx_layer (Layer *layer, GContext *ctx) {
   fctx_begin_fill(&fctx);
   fctx_set_text_em_height(&fctx, Digits_Font, font_size_digits);
 
-  #ifdef PBL_PLATFORM_EMERY
-    //GRect((bounds.size.w / 2) - 16, bounds.size.h - 40, 36, 40)
-    twelve_pos.x = INT_TO_FIXED((bounds.size.w / 2) - 2 + 1);
-    twelve_pos.y = INT_TO_FIXED(-3);
-  #elif defined(PBL_BW)
-    twelve_pos.x = INT_TO_FIXED((bounds.size.w / 2) - 2 + 1);
-    twelve_pos.y = INT_TO_FIXED(-2);
-  #else
-    twelve_pos.x = INT_TO_FIXED((bounds.size.w / 2) - 2 );
-    twelve_pos.y = INT_TO_FIXED(-2);
-  #endif
+  twelve_pos.x = INT_TO_FIXED((bounds.size.w / 2) + config.twelve_pos_x);
+  twelve_pos.y = INT_TO_FIXED(config.twelve_pos_y);
 
   char twelvedraw [3];
   snprintf(twelvedraw, sizeof(twelvedraw), "%s", "12");
@@ -1322,29 +1452,19 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
   if(settings.EnableBattery ){
     fctx_set_fill_color(&fctx, PBL_IF_BW_ELSE(settings.BWDateColor, settings.DateColor));
     FPoint battery_pos;
-    #ifdef PBL_PLATFORM_EMERY
-      int font_size_battery = 12;
-    #elif defined(PBL_BW)
-      int font_size_battery = 10;
-    #else
-      int font_size_battery = 10;
-    #endif
-
+    
+    int font_size_battery = config.font_size_battery;
+    
     int s_battery_level = battery_state_service_peek().charge_percent;
     fctx_begin_fill(&fctx);
     fctx_set_text_em_height(&fctx, Date_Font, font_size_battery);
 
         // Place the code that formats and draws the battery percentage text here.
       if (settings.EnableBatteryLine) {
-          #ifdef PBL_PLATFORM_EMERY
-            //GRect((bounds.size.w / 2) - 16, bounds.size.h - 40, 36, 40)
-            battery_pos.x = INT_TO_FIXED((bounds.size.w / 2));
-            battery_pos.y = INT_TO_FIXED(config.BatteryYOffset + config.yOffsetFctx);
-          #else
-            battery_pos.x = INT_TO_FIXED((bounds.size.w / 2) );
-            battery_pos.y = INT_TO_FIXED(config.BatteryYOffset + config.yOffsetFctx);
-          #endif
-          //int rect_y_pos = config.BatteryYOffset;
+
+          battery_pos.x = INT_TO_FIXED((bounds.size.w / 2));
+          battery_pos.y = INT_TO_FIXED(config.BatteryYOffset + config.yOffsetFctx + config.battery_pos_z);
+
           char BatterytoDraw[6];
           snprintf(BatterytoDraw,sizeof(BatterytoDraw),"%d",s_battery_level);
 
@@ -1353,15 +1473,10 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
           fctx_end_fill(&fctx);
         }
         else {
-          #ifdef PBL_PLATFORM_EMERY
-            //GRect((bounds.size.w / 2) - 16, bounds.size.h - 40, 36, 40)
-            battery_pos.x = INT_TO_FIXED((bounds.size.w / 2));
-            battery_pos.y = INT_TO_FIXED(config.BatteryYOffset   + config.yOffsetFctx + 4);
-          #else
-            battery_pos.x = INT_TO_FIXED((bounds.size.w / 2) );
-            battery_pos.y = INT_TO_FIXED(config.BatteryYOffset + config.yOffsetFctx + 4);
-          #endif
-          //int rect_y_pos = config.BatteryYOffset + 4;
+
+          battery_pos.x = INT_TO_FIXED((bounds.size.w / 2) );
+          battery_pos.y = INT_TO_FIXED(config.BatteryYOffset + config.yOffsetFctx + config.battery_pos_y);
+
           char BatterytoDraw[6];
           snprintf(BatterytoDraw,sizeof(BatterytoDraw),"%d",s_battery_level);
 
@@ -1392,13 +1507,8 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
     // int weekday_loc_x = 0;
     // int weekday_loc_y = 0;
 
-    #ifdef PBL_PLATFORM_EMERY
-          int font_size_date = 12;
-    #else
-          int font_size_date = 9;
-    #endif
-
-
+    int font_size_date = config.font_size_date;
+   
     int xPosition;
     int yPosition;
     int xOffset = config.xOffset;
@@ -1517,20 +1627,10 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
     fctx_set_fill_color(&fctx, PBL_IF_BW_ELSE(settings.BWDateColor, settings.DateColor));
     FPoint logo_pos;
 
-    #ifdef PBL_PLATFORM_EMERY
-      //GRect((bounds.size.w / 2) - 16, bounds.size.h - 40, 36, 40)
-      logo_pos.x = INT_TO_FIXED((bounds.size.w / 2));
-      logo_pos.y = INT_TO_FIXED(config.LogoYOffset);
-    #else
-      logo_pos.x = INT_TO_FIXED((bounds.size.w / 2));
-      logo_pos.y = INT_TO_FIXED(config.LogoYOffset);
-    #endif
+    logo_pos.x = INT_TO_FIXED((bounds.size.w / 2));
+    logo_pos.y = INT_TO_FIXED(config.LogoYOffset);
 
-    #ifdef PBL_PLATFORM_EMERY
-      int font_size_logo = 8;
-    #else
-      int font_size_logo = 8;
-    #endif
+      int font_size_logo = config.font_size_logo;
 
       fctx_begin_fill(&fctx);
       fctx_set_text_em_height(&fctx, Date_Font, font_size_logo);
@@ -1554,22 +1654,34 @@ static void layer_update_proc_dial_digits_mask(Layer *layer, GContext *ctx) {
   graphics_context_set_antialiased(ctx, true);
   graphics_context_set_fill_color(ctx, PBL_IF_BW_ELSE(settings.BWBackgroundColor2, settings.BackgroundColor2));
 
-#ifdef PBL_PLATFORM_EMERY
-  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 15, 23, 39, 7), 2, GCornersAll);
-#else
-  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 14, 22, 36, 7), 2, GCornersAll);
-#endif
+  GRect dial_digits_mask_a = config.dial_digits_mask_a[0]; //shadow mask for behind the 12 digit
+  graphics_fill_rect(ctx, dial_digits_mask_a, 1, GCornersAll);
+
+
+// #ifdef PBL_PLATFORM_EMERY
+//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 15, 23, 39, 7), 2, GCornersAll);
+// #else
+//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 14, 22, 36, 7), 2, GCornersAll);
+// #endif
 
   //graphics_context_set_text_color(ctx, PBL_IF_BW_ELSE(settings.BWTextColor2, settings.TextColor3));
   graphics_context_set_fill_color(ctx, PBL_IF_BW_ELSE(settings.BWBackgroundColor1, settings.BackgroundColor1));
 
-#ifdef PBL_PLATFORM_EMERY
-  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 19, 0, 39, 27), 1, GCornersAll);
-  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 19, bounds.size.h - 19, 31, 27), 1, GCornersAll);
-#else
-  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 18, 0, 36, 26), 1, GCornersAll);
-  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 13, bounds.size.h - 26, 28, 26), 1, GCornersAll);
-#endif
+
+GRect dial_digits_mask_b = config.dial_digits_mask_b[0];  //face colour mask for behind the 12 digit
+graphics_fill_rect(ctx, dial_digits_mask_b, 1, GCornersAll);
+
+GRect dial_digits_mask_c = config.dial_digits_mask_b[0]; //face color mask for behind the 6 digit
+graphics_fill_rect(ctx, dial_digits_mask_c, 1, GCornersAll);
+
+
+// #ifdef PBL_PLATFORM_EMERY
+// //  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 19, 0, 39, 27), 1, GCornersAll);
+//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 19, bounds.size.h - 19, 31, 27), 1, GCornersAll);
+// #else
+// //  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 18, 0, 36, 26), 1, GCornersAll);
+//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 13, bounds.size.h - 26, 28, 26), 1, GCornersAll);
+// #endif
 
 }
 
@@ -1592,14 +1704,7 @@ static void layer_update_proc_seconds_hand(Layer *layer, GContext *ctx) {
 
   int seconds_angle = ((double)seconds / 60 * 360) - 90;
 
-#ifdef PBL_PLATFORM_EMERY
-  draw_line_hand(ctx, seconds_angle, bounds.size.w / 2 - 20, 22, settings.SecondsHandColor);
-#elif defined(PBL_COLOR)
-  draw_line_hand(ctx, seconds_angle, PBL_IF_ROUND_ELSE(bounds.size.w / 2 - 35, bounds.size.w / 2 - 20), 22, settings.SecondsHandColor);
-#else
-  draw_line_hand(ctx, seconds_angle, bounds.size.w / 2 - 20, 22, settings.BWTextColor2);
-#endif
-
+  draw_line_hand(ctx, seconds_angle, bounds.size.w/2 - config.second_hand_a, config.second_hand_b,  PBL_IF_BW_ELSE(settings.BWTextColor2, settings.SecondsHandColor));
   draw_seconds_center(ctx, PBL_IF_BW_ELSE(settings.BWTextColor1, settings.HoursHandColor), PBL_IF_BW_ELSE(settings.BWTextColor2, settings.SecondsHandColor));
 }
 
@@ -1616,7 +1721,7 @@ static void layer_update_proc_battery_line(Layer *layer, GContext *ctx) {
     // 2. DRAW THE BATTERY LINE (Independent Visibility Check)
     if (settings.EnableBatteryLine) {
         //  the code that draws the battery line
-        int width_rect = (s_battery_level * 51) / 100;
+        int width_rect = (s_battery_level * config.battery_line) / 100;
         int rect_x_pos = (bounds.size.w/2) - (width_rect/2);
 
         GRect BatteryLineRect = GRect(rect_x_pos,config.BatteryLineYOffset,width_rect, 2);
@@ -1789,25 +1894,11 @@ static void hour_min_hands_canvas_update_proc(Layer *layer, GContext *ctx) {
 
    int hours_angle = ((double)hours / 12 * 360) + ((double)minutes / 60 * 360 / 12) + /*((double)seconds / 60 * 360 / 60 / 12)*/  - 90;
 
- #ifdef PBL_PLATFORM_EMERY
-   draw_fancy_hand_hour(ctx, hours_angle, bounds.size.w / 2 - 50, settings.HoursHandColor, settings.HoursHandBorderColor);
- #elif defined (PBL_COLOR)
-   draw_fancy_hand_hour(ctx, hours_angle, PBL_IF_ROUND_ELSE(bounds.size.w / 2 - 50,bounds.size.w / 2 - 35), settings.HoursHandColor, settings.HoursHandBorderColor);
- #else
-   draw_fancy_hand_hour(ctx, hours_angle, bounds.size.w / 2 - 35, settings.BWTextColor1, settings.BWTextColor2);
- #endif
+  draw_fancy_hand_hour(ctx, hours_angle, bounds.size.w / 2 - config.hour_hand_a, PBL_IF_BW_ELSE(settings.BWTextColor1,settings.HoursHandColor), PBL_IF_BW_ELSE(settings.BWTextColor2,settings.HoursHandBorderColor));
 
    int minutes_angle = ((double)minutes / 60 * 360) + /*((double)seconds / 60 * 360 / 60)*/ - 90;
- #ifdef PBL_PLATFORM_EMERY
-   draw_fancy_hand_min(ctx, minutes_angle, bounds.size.w / 2 - 20, settings.MinutesHandColor, settings.MinutesHandBorderColor);
 
- #elif defined (PBL_COLOR)
-   draw_fancy_hand_min(ctx, minutes_angle, PBL_IF_ROUND_ELSE(bounds.size.w / 2 - 34,bounds.size.w / 2 - 22), settings.MinutesHandColor, settings.MinutesHandBorderColor);
- #else
-   draw_fancy_hand_min(ctx, minutes_angle, bounds.size.w / 2 - 22, settings.BWTextColor1, settings.BWTextColor2);
- #endif
-
-
+   draw_fancy_hand_min(ctx, minutes_angle, bounds.size.w / 2 - config.min_hand_a, PBL_IF_BW_ELSE(settings.BWTextColor1,settings.MinutesHandColor), PBL_IF_BW_ELSE(settings.BWTextColor2,settings.MinutesHandBorderColor));
 
  #ifdef PBL_COLOR
    draw_center(ctx, settings.HoursHandBorderColor, settings.HoursHandColor);
@@ -1829,13 +1920,17 @@ static void bg_update_proc(Layer *layer, GContext *ctx) {
 
    // Draw the large circle with a shadow
       GPoint center = GPoint(bounds.size.w / 2, bounds.size.h / 2);
-     #ifdef PBL_ROUND
-      int circle_radius = (bounds.size.h / 2) - 17; // Adjust this value as needed
-      int tick_mask_radius = circle_radius +12;
-     #else
-       int circle_radius = (bounds.size.h / 2) - 18; // Adjust this value as needed
-       int tick_mask_radius = circle_radius +12;
-     #endif
+
+      int circle_radius = (bounds.size.h / 2) - config.circle_radius_adj; // Adjust struct value as needed
+      int tick_mask_radius = circle_radius + config.tick_mask_radius_adj; //adjust in structs
+
+    //  #ifdef PBL_ROUND
+    //   int circle_radius = (bounds.size.h / 2) - 17; // Adjust this value as needed
+    //   int tick_mask_radius = circle_radius +12;
+    //  #else
+    //    int circle_radius = (bounds.size.h / 2) - 18; // Adjust this value as needed
+    //    int tick_mask_radius = circle_radius +12;
+    //  #endif
 
      draw_circle_shadow(ctx, center, circle_radius, PBL_IF_BW_ELSE(settings.BWBackgroundColor1, settings.BackgroundColor1), PBL_IF_BW_ELSE(settings.BWBackgroundColor2, settings.BackgroundColor2));
 
