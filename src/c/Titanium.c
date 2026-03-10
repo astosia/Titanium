@@ -134,13 +134,13 @@ static const UIConfig config = {
 .tick_mask_radius_adj = 12,
 .dial_digits_mask_a = {{{100-15,23},{39,7}}},
 .dial_digits_mask_b = {{{100-19,0},{39,27}}},
-.dial_digits_mask_c = {{{100-19,228-19},{31,27}}}
+.dial_digits_mask_c = {{{100-15,228-27},{31,27}}}
 };
 #elif defined(PBL_PLATFORM_GABBRO)
 static const UIConfig config = {
 .BottomXPosition = 46+30,
 .BottomYPosition = 168+22+3,
-.LeftxPosition = 16,
+.LeftxPosition = 16+2,
 .xOffset = 22,
 .yOffset = -8,
 .xOffsetFctxWeekday = 38/2  -1,
@@ -179,7 +179,7 @@ static const UIConfig config = {
 .tick_mask_radius_adj = 12,
 .dial_digits_mask_a = {{{130-15,23-2},{39,7+2}}},
 .dial_digits_mask_b = {{{130-19,0},{39,27}}},
-.dial_digits_mask_c = {{{130-19,260-19},{31,27}}}
+.dial_digits_mask_c = {{{130-15,260-27},{31,27}}}
 };
 #elif defined(PBL_BW)
 static const UIConfig config = {
@@ -1249,7 +1249,8 @@ static void draw_circle_shadow(GContext *ctx, GPoint center, int radius, GColor 
 
     // Draw the main circle on top of the shadow
     graphics_context_set_fill_color(ctx, circle_color);
-    graphics_fill_circle(ctx, GPoint(center.x + 4, center.y + 4), radius);
+//    graphics_fill_circle(ctx, GPoint(center.x + 4, center.y + 4), radius);
+    graphics_fill_circle(ctx, GPoint(center.x + 2, center.y + 2), radius - 3.5);
 }
 
 
@@ -1309,47 +1310,37 @@ static void update_dial_digits_fctx_layer (Layer *layer, GContext *ctx) {
   fctx_deinit_context(&fctx);
 
 }
-#ifdef PBL_BW
+#ifdef PBL_BW  //DON'T use FCTX a second time on Aplite: also use on Diorite and Flint as fctx is less efficient
 static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
-  //DON'T use FCTX on Aplite
-
+  
   GRect bounds = layer_get_bounds(s_date_battery_logo_layer);
 
   //draw battery value
   if(settings.EnableBattery ){
+      int s_battery_level = battery_state_service_peek().charge_percent;
+      char BatterytoDraw[6];
+            snprintf(BatterytoDraw,sizeof(BatterytoDraw),"%d",s_battery_level);
 
-    int s_battery_level = battery_state_service_peek().charge_percent;
-    char BatterytoDraw[6];
-          snprintf(BatterytoDraw,sizeof(BatterytoDraw),"%d",s_battery_level);
-
-    if (settings.EnableBatteryLine) {
-      GRect BatteryRect = GRect((bounds.size.w / 2) - 18, config.BatteryYOffset, 36, 40);
-      graphics_context_set_text_color(ctx, settings.BWDateColor);
-      graphics_draw_text(ctx, BatterytoDraw, FontBattery, BatteryRect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
-
-    }
-    else{
-      GRect BatteryRect = GRect((bounds.size.w / 2) - 18, config.BatteryYOffset + 4, 36, 40);
-      graphics_context_set_text_color(ctx, settings.BWDateColor);
-      graphics_draw_text(ctx, BatterytoDraw, FontBattery, BatteryRect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
-
-    }
-
+      if (settings.EnableBatteryLine) {
+        GRect BatteryRect = GRect((bounds.size.w / 2) - 18, config.BatteryYOffset, 36, 40);
+        graphics_context_set_text_color(ctx, settings.BWDateColor);
+        graphics_draw_text(ctx, BatterytoDraw, FontBattery, BatteryRect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
+      }
+      else{
+        GRect BatteryRect = GRect((bounds.size.w / 2) - 18, config.BatteryYOffset + 4, 36, 40);
+        graphics_context_set_text_color(ctx, settings.BWDateColor);
+        graphics_draw_text(ctx, BatterytoDraw, FontBattery, BatteryRect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
+      }
     }
 
   //draw weekday and date text
   if (settings.EnableDate ) {
-
-
     minutes = prv_tick_time->tm_min;
     hours = prv_tick_time->tm_hour % 12;
-
-
     ///use below for testing and for screenshots
      //int seconds = 8;
        // minutes = 30;
        // hours = 9;
-
 
     int xPosition;
     int yPosition;
@@ -1368,24 +1359,23 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 
     if (((hours > 7 && hours < 11) && (minutes > 7 && minutes < 23))||
     ((hours <5 && hours >1) && (minutes > 37 && minutes < 53))){
-      //bottom position
-      xPosition = config.BottomXPosition;
-      yPosition = config.BottomYPosition;
+          //bottom position
+          xPosition = config.BottomXPosition;
+          yPosition = config.BottomYPosition;
      }
      else if ((minutes > 7 && minutes < 23)||
      ((hours <5 && hours >1) && (minutes > 52 || minutes < 37))){
-//       // Left position
-      xPosition = config.LeftxPosition;
-      yPosition = bounds.size.h/2;
+    //       // Left position
+          xPosition = config.LeftxPosition;
+          yPosition = bounds.size.h/2;
      }
      else{
-       // Right position
-     xPosition = bounds.size.w/2;
-     yPosition = bounds.size.h/2;
+            // Right position
+          xPosition = bounds.size.w/2;
+          yPosition = bounds.size.h/2;
      }
     GRect DateShadowRect =
-     //  (0, offsetdate, bounds3.size.w, bounds1.size.h/4);
-       GRect(xPosition + xOffset, yPosition + yOffset, ShadowAndMaskWidth, ShadowAndMaskHeight);
+        GRect(xPosition + xOffset, yPosition + yOffset, ShadowAndMaskWidth, ShadowAndMaskHeight);
 
      GRect DateShadowMaskRect =
         GRect(xPosition + xOffset + xyMaskOffset, yPosition + yOffset + xyMaskOffset, ShadowAndMaskWidth-xyMaskOffset, ShadowAndMaskHeight-xyMaskOffset);
@@ -1409,7 +1399,6 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
     snprintf(daynow, sizeof(daynow), "%d", current_date);
 
     GRect WeekdayRect =
-           //  (0, offsetdate, bounds3.size.w, bounds1.size.h/4);
          GRect(xPosition + xOffset + xWeekdayOffset, yPosition + yOffset +yWeekdayDateOffset, WeekdayWidth, WeekdayDateHeight);
 
      GRect DateRect =
@@ -1418,11 +1407,11 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
      graphics_context_set_text_color(ctx, settings.BWDateColor);
      graphics_draw_text(ctx, weekdaydraw, FontDate, WeekdayRect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
      graphics_draw_text(ctx, daynow, FontDate, DateRect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
- }
+  }
 
 
-     if (settings.EnableLogo) {
-       //draw logo text
+  if (settings.EnableLogo) {
+      //draw logo text
       GRect LogoRect = GRect((bounds.size.w / 2) - 50, config.LogoYOffset - 1, 100, 40);
 
       char logodraw [12];
@@ -1430,13 +1419,12 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 
       graphics_context_set_text_color(ctx, settings.BWDateColor);
       graphics_draw_text(ctx, logodraw, FontLogo, LogoRect, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
-     }
+  }
 
 }
-#else
+#else   //use FCTX to antialise the digits better on all colour watches, still refers to B&W in case I change my mind later on non-APLITE watches
 static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
-  //use FCTX to antialise the digits better on all watches except APLITE
-
+  
   GRect bounds = layer_get_bounds(s_date_battery_logo_layer);
 
   FContext fctx;
@@ -1447,8 +1435,6 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
   #endif
 
   //draw battery value
-
-
   if(settings.EnableBattery ){
     fctx_set_fill_color(&fctx, PBL_IF_BW_ELSE(settings.BWDateColor, settings.DateColor));
     FPoint battery_pos;
@@ -1459,7 +1445,7 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
     fctx_begin_fill(&fctx);
     fctx_set_text_em_height(&fctx, Date_Font, font_size_battery);
 
-        // Place the code that formats and draws the battery percentage text here.
+        // Formats and draws the battery percentage text
       if (settings.EnableBatteryLine) {
 
           battery_pos.x = INT_TO_FIXED((bounds.size.w / 2));
@@ -1472,7 +1458,7 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
           fctx_draw_string(&fctx, BatterytoDraw, Date_Font, GTextAlignmentCenter, FTextAnchorTop);
           fctx_end_fill(&fctx);
         }
-        else {
+        else { //shift the percentage text slightly when there's no battery line
 
           battery_pos.x = INT_TO_FIXED((bounds.size.w / 2) );
           battery_pos.y = INT_TO_FIXED(config.BatteryYOffset + config.yOffsetFctx + config.battery_pos_y);
@@ -1484,7 +1470,7 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
           fctx_draw_string(&fctx, BatterytoDraw, Date_Font, GTextAlignmentCenter, FTextAnchorTop);
           fctx_end_fill(&fctx);
         }
-    }
+  }
 
 
   //draw weekday and date text
@@ -1494,7 +1480,6 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
     minutes = prv_tick_time->tm_min;
     hours = prv_tick_time->tm_hour % 12;
 
-
     ///use below for testing and for screenshots
     //  int seconds = 8;
        // minutes = 30;
@@ -1502,10 +1487,6 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 
     FPoint weekday_pos;
     FPoint date_pos;
-
-
-    // int weekday_loc_x = 0;
-    // int weekday_loc_y = 0;
 
     int font_size_date = config.font_size_date;
    
@@ -1569,8 +1550,7 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
     }
     //APP_LOG(APP_LOG_LEVEL_DEBUG,"weekday pos is %d, %d", weekday_loc_x, weekday_loc_y);
     GRect DateShadowRect =
-     //  (0, offsetdate, bounds3.size.w, bounds1.size.h/4);
-       GRect(xPosition + xOffset, yPosition + yOffset, ShadowAndMaskWidth, ShadowAndMaskHeight);
+        GRect(xPosition + xOffset, yPosition + yOffset, ShadowAndMaskWidth, ShadowAndMaskHeight);
 
      GRect DateShadowMaskRect =
         GRect(xPosition + xOffset + xyMaskOffset, yPosition + yOffset + xyMaskOffset, ShadowAndMaskWidth-xyMaskOffset, ShadowAndMaskHeight-xyMaskOffset);
@@ -1600,7 +1580,7 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 
     char weekdaydraw[10];
     snprintf(weekdaydraw, sizeof(weekdaydraw), "%s", weekday);
-  //  snprintf(weekdaydraw, sizeof(weekdaydraw), "%s", "WED");
+  //  snprintf(weekdaydraw, sizeof(weekdaydraw), "%s", "WED");  //use for testing instead of line above (WED is widest text for weekday)
 
     fctx_set_offset(&fctx, weekday_pos);
     fctx_draw_string(&fctx, weekdaydraw, Date_Font, GTextAlignmentCenter, FTextAnchorTop);
@@ -1613,7 +1593,7 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 
     char daynow[5];
     snprintf(daynow, sizeof(daynow), "%d", current_date);
-  //  snprintf(daynow, sizeof(daynow), "%s", "30");
+  //  snprintf(daynow, sizeof(daynow), "%s", "30"); //use for testing instead of line above (30 is widest text for date)
 
     fctx_set_offset(&fctx, date_pos);
     fctx_draw_string(&fctx, daynow, Date_Font, GTextAlignmentCenter, FTextAnchorTop);
@@ -1649,7 +1629,7 @@ static void update_logo_date_battery_fctx_layer (Layer *layer, GContext *ctx) {
 }
 #endif
 
-static void layer_update_proc_dial_digits_mask(Layer *layer, GContext *ctx) {
+static void layer_update_proc_dial_digits_mask(Layer *layer, GContext *ctx) {   //background squares and shadows for the 12 and 6 digits
   GRect bounds = layer_get_bounds(s_dial_layer);
   graphics_context_set_antialiased(ctx, true);
   graphics_context_set_fill_color(ctx, PBL_IF_BW_ELSE(settings.BWBackgroundColor2, settings.BackgroundColor2));
@@ -1657,31 +1637,14 @@ static void layer_update_proc_dial_digits_mask(Layer *layer, GContext *ctx) {
   GRect dial_digits_mask_a = config.dial_digits_mask_a[0]; //shadow mask for behind the 12 digit
   graphics_fill_rect(ctx, dial_digits_mask_a, 1, GCornersAll);
 
-
-// #ifdef PBL_PLATFORM_EMERY
-//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 15, 23, 39, 7), 2, GCornersAll);
-// #else
-//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 14, 22, 36, 7), 2, GCornersAll);
-// #endif
-
-  //graphics_context_set_text_color(ctx, PBL_IF_BW_ELSE(settings.BWTextColor2, settings.TextColor3));
   graphics_context_set_fill_color(ctx, PBL_IF_BW_ELSE(settings.BWBackgroundColor1, settings.BackgroundColor1));
 
 
 GRect dial_digits_mask_b = config.dial_digits_mask_b[0];  //face colour mask for behind the 12 digit
 graphics_fill_rect(ctx, dial_digits_mask_b, 1, GCornersAll);
 
-GRect dial_digits_mask_c = config.dial_digits_mask_b[0]; //face color mask for behind the 6 digit
+GRect dial_digits_mask_c = config.dial_digits_mask_c[0]; //face color mask for behind the 6 digit
 graphics_fill_rect(ctx, dial_digits_mask_c, 1, GCornersAll);
-
-
-// #ifdef PBL_PLATFORM_EMERY
-// //  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 19, 0, 39, 27), 1, GCornersAll);
-//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 19, bounds.size.h - 19, 31, 27), 1, GCornersAll);
-// #else
-// //  graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 18, 0, 36, 26), 1, GCornersAll);
-//   graphics_fill_rect(ctx, GRect((bounds.size.w / 2) - 13, bounds.size.h - 26, 28, 26), 1, GCornersAll);
-// #endif
 
 }
 
@@ -1708,19 +1671,16 @@ static void layer_update_proc_seconds_hand(Layer *layer, GContext *ctx) {
   draw_seconds_center(ctx, PBL_IF_BW_ELSE(settings.BWTextColor1, settings.HoursHandColor), PBL_IF_BW_ELSE(settings.BWTextColor2, settings.SecondsHandColor));
 }
 
-
-
 static void layer_update_proc_battery_line(Layer *layer, GContext *ctx) {
-    // 1. EXIT EARLY: If neither element is enabled, stop.
+    // If neither element is enabled in config, stop.
     if (!settings.EnableBattery && !settings.EnableBatteryLine) {
         return;
     }
 
     int s_battery_level = battery_state_service_peek().charge_percent;
 
-    // 2. DRAW THE BATTERY LINE (Independent Visibility Check)
+    // Draw battery line
     if (settings.EnableBatteryLine) {
-        //  the code that draws the battery line
         int width_rect = (s_battery_level * config.battery_line) / 100;
         int rect_x_pos = (bounds.size.w/2) - (width_rect/2);
 
@@ -1728,13 +1688,10 @@ static void layer_update_proc_battery_line(Layer *layer, GContext *ctx) {
         graphics_context_set_antialiased(ctx, true);
         graphics_context_set_fill_color(ctx, PBL_IF_BW_ELSE(settings.BWTextColor2, settings.BatteryLineColor));
         graphics_fill_rect(ctx,BatteryLineRect, 1, GCornersBottom);
-
     }
-
-
 }
 
-//Update procedure for the BT Icon layer
+//Update procedure for the Bluetooth Icon (shows when disconnected) layer
 static void layer_update_proc_bt(Layer * layer, GContext * ctx){
   GRect bounds = layer_get_bounds(layer);
    minutes = prv_tick_time->tm_min;
@@ -1798,7 +1755,7 @@ static void layer_update_proc_bt(Layer * layer, GContext * ctx){
 
 }
 
-//Update procedure for the QT Icon layer
+//Update procedure for the QT Icon layer (shows when Quiet time is active)
 static void layer_update_proc_qt(Layer * layer, GContext * ctx){
 
   GRect bounds = layer_get_bounds(layer);
@@ -1849,8 +1806,7 @@ static void layer_update_proc_qt(Layer * layer, GContext * ctx){
   GRect QTIconRect =
     GRect(xPosition + config.xOffset, yPosition + config.yOffset + QTIconYOffset, textboxwidth, 20);
 
- quiet_time_icon();
-
+ quiet_time_icon(); //checks whether quiet time is active
 
  #ifdef PBL_COLOR
   graphics_context_set_text_color(ctx, settings.BTQTColor);
@@ -1859,7 +1815,6 @@ static void layer_update_proc_qt(Layer * layer, GContext * ctx){
   #endif
   graphics_context_set_antialiased(ctx, true);
   graphics_draw_text(ctx, "\U0000E061", FontBTQTIcons, QTIconRect, GTextOverflowModeFill,GTextAlignmentCenter, NULL);
-
 
 }
 
@@ -1972,21 +1927,20 @@ static void prv_window_load(Window *window) {
   Layer *seconds_root_layer = window_get_root_layer(window);
   bounds_seconds = layer_get_bounds(seconds_root_layer);
 
-  // Load fonts here, so they are available for the layers
+  // Load fctx ffonts
     Digits_Font =  ffont_create_from_resource(RESOURCE_ID_FONT_DIGITS_FCTX);
     Date_Font =  ffont_create_from_resource(RESOURCE_ID_FONT_DATE_FCTX);
     FontBTQTIcons = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DRIPICONS_16));
-    #ifdef PBL_BW
+    //non-fctx custom fonts for B&W screens
+    #ifdef PBL_BW 
     FontDate = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_9));
     FontBattery = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_10));
     FontLogo = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_8));
     #endif
   // Subscribe to the connection service to get Bluetooth status updates.
-  // Add the following code in prv_window_load
   connection_service_subscribe((ConnectionHandlers){
     .pebble_app_connection_handler = bluetooth_vibe_icon
   });
-
 
   // Subscribe to the correct tick service based on settings
     if (settings.EnableSecondsHand) {
@@ -2003,8 +1957,7 @@ static void prv_window_load(Window *window) {
     }
     showSeconds = settings.EnableSecondsHand;
 
-
-
+  //create layers
   s_bg_layer = layer_create(bounds);
   s_dial_layer = layer_create(bounds);
   s_canvas_qt_icon = layer_create(bounds);
